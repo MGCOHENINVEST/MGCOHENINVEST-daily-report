@@ -1,0 +1,10 @@
+# Global default: at least one of these humans gets auto-requested
+*                                          @MGCOHENINVEST
+
+# Path ownership
+/src/                                      @MGCOHENINVEST
+/templates/email/                          @MGCOHENINVEST
+/scripts/                                  @MGCOHENINVEST
+/.github/                                  @MGCOHENINVEST
+/docs/                                     @MGCOHENINVEST
+/data/                                     @MGCOHENINVEST
