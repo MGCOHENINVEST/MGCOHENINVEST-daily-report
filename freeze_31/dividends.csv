@@ -1,0 +1,4 @@
+ticker,name,ex_date,pay_date,amount
+BARC.L,Barclays,2025-09-05,2025-10-04,2.3p
+LLOY.L,Lloyds,2025-09-07,2025-10-10,1.8p
+MSFT,Microsoft,2025-09-12,2025-10-10,$0.75

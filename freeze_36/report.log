@@ -1,0 +1,25 @@
+Completed 212 Bytes/555 Bytes (381 Bytes/s) with 3 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/news_general.json to ./news_general.json
+Completed 212 Bytes/555 Bytes (381 Bytes/s) with 2 file(s) remainingCompleted 343 Bytes/555 Bytes (613 Bytes/s) with 2 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/macro.json to ./macro.json
+Completed 343 Bytes/555 Bytes (613 Bytes/s) with 1 file(s) remainingCompleted 555 Bytes/555 Bytes (974 Bytes/s) with 1 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/news_finance.json to ./news_finance.json
+Wrote daily_report_rendered.html
+✅ Daily Report sent via port 587.
+✅ Daily Report pipeline completed.
+Completed 131 Bytes/555 Bytes (486 Bytes/s) with 3 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/macro.json to ./macro.json
+Completed 131 Bytes/555 Bytes (486 Bytes/s) with 2 file(s) remainingCompleted 343 Bytes/555 Bytes (1.0 KiB/s) with 2 file(s) remaining  Completed 555 Bytes/555 Bytes (1.7 KiB/s) with 2 file(s) remaining  download: s3://daily-report-freezes-michael/daily-report/freeze_31/news_general.json to ./news_general.json
+Completed 555 Bytes/555 Bytes (1.7 KiB/s) with 1 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/news_finance.json to ./news_finance.json
+Wrote daily_report_rendered.html
+✅ Daily Report sent via port 587.
+✅ Daily Report pipeline completed.
+Completed 131 Bytes/555 Bytes (448 Bytes/s) with 3 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/macro.json to ./macro.json
+Completed 131 Bytes/555 Bytes (448 Bytes/s) with 2 file(s) remainingCompleted 343 Bytes/555 Bytes (1.1 KiB/s) with 2 file(s) remaining  download: s3://daily-report-freezes-michael/daily-report/freeze_31/news_finance.json to ./news_finance.json
+Completed 343 Bytes/555 Bytes (1.1 KiB/s) with 1 file(s) remainingCompleted 555 Bytes/555 Bytes (1.7 KiB/s) with 1 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/news_general.json to ./news_general.json
+Wrote daily_report_rendered.html
+✅ Daily Report sent via port 587.
+✅ Daily Report pipeline completed.
+Completed 212 Bytes/555 Bytes (670 Bytes/s) with 3 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/news_finance.json to ./news_finance.json
+Completed 212 Bytes/555 Bytes (670 Bytes/s) with 2 file(s) remainingCompleted 343 Bytes/555 Bytes (1.1 KiB/s) with 2 file(s) remaining  download: s3://daily-report-freezes-michael/daily-report/freeze_31/macro.json to ./macro.json
+Completed 343 Bytes/555 Bytes (1.1 KiB/s) with 1 file(s) remainingCompleted 555 Bytes/555 Bytes (1.5 KiB/s) with 1 file(s) remainingdownload: s3://daily-report-freezes-michael/daily-report/freeze_31/news_general.json to ./news_general.json
+Wrote daily_report_rendered.html
+✅ Daily Report sent via port 2525.
+✅ Daily Report pipeline completed.
+Completed 2.0 KiB/2.0 KiB (10.9 KiB/s) with 1 file(s) remainingupload: ./daily_report_full.html to s3://daily-report-freezes-michael/archives/daily_report_2025-09-07_073010.html

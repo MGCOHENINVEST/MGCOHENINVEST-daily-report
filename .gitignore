@@ -1,0 +1,9 @@
+.venv/
+.env*
+*.bak
+*.save
+__pycache__/
+*.pyc
+out/
+awscliv2.zip
+.DS_Store
