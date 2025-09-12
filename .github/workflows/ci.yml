@@ -1,0 +1,17 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Stock CSV validation
+        run: python src/validators/stock_validator.py
+      - name: Email smoke render
+        run: |
+          chmod +x scripts/render_email_smoke.sh
+          ./scripts/render_email_smoke.sh
+          test -s out/daily_smoke_test.html
