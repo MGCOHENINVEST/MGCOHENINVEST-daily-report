@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ subject or "Daily Report" }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
+    <h1>{{ headline or "Daily Report" }}</h1>
+    <p><strong>Freeze:</strong> {{ freeze }} · <strong>Snapshot:</strong> {{ snapshot }}</p>
+
+    {% if exec_summary %}
+      <h3>Summary</h3>
+      <ul>{% for line in exec_summary %}<li>{{ line }}</li>{% endfor %}</ul>
+    {% endif %}
+
+    {% if movers %}
+      <h3>Movers</h3>
+      <ul>{% for m in movers %}<li>{{ m.ticker }} — {{ m.name }} ({{ m.delta_pct }}%)</li>{% endfor %}</ul>
+    {% endif %}
+
+    <p style="color:#888;">CI smoke render</p>
+  </body>
+</html>

@@ -1,6 +1,1 @@
-# Python dependencies for Daily Report System
-
-matplotlib   # for sparkline generation and charts
-requests     # for API calls (e.g., news, macro data)
-sendgrid     # if using SendGrid API client
-python-dotenv # for loading environment variables from .env (optional)
+Jinja2>=3.1.3
