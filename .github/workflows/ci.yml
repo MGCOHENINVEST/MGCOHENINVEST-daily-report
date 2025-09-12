@@ -9,29 +9,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
     - name: Install dependencies
       run: |
         python -m venv .venv
         source .venv/bin/activate
         pip install --upgrade pip
         pip install -r requirements.txt
-      - name: Stock CSV validation
-        run: python src/validators/stock_validator.py
-      - name: Bond CSV validation
-        run: python src/validators/bond_validator.py
-      - name: Render smoke email
-        run: ./scripts/render_email_smoke.sh
+
+    - name: Stock CSV validation
+      run: |
+        source .venv/bin/activate
+        python src/validators/stock_validator.py
+
+    - name: Bond CSV validation
+      run: |
+        source .venv/bin/activate
+        python src/validators/bond_validator.py
+
+    - name: Render smoke email
+      run: |
+        source .venv/bin/activate
+        ./scripts/render_email_smoke.sh
 
   validate:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Confirm build passed
-        run: echo "Build passed, validation succeeded."
+      - run: echo "Validation passed!"
