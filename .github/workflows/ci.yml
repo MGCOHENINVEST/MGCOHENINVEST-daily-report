@@ -18,19 +18,27 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
+        # 🔥 Enable pip cache tied to requirements.txt
+        cache: 'pip'
+        cache-dependency-path: requirements.txt
 
     - name: Install dependencies
       run: |
         python -m venv .venv
         source .venv/bin/activate
-        pip install --upgrade pip
-        pip install jinja2
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # belt-and-braces: make sure Jinja2 is present
+        pip show Jinja2 || pip install Jinja2
+        python -c "import jinja2; print('Jinja2 OK:', jinja2.__version__)"
 
     - name: Stock CSV validation
-      run: python src/validators/stock_validator.py
+      run: .venv/bin/python src/validators/stock_validator.py
 
     - name: Bond CSV validation
-      run: python src/validators/bond_validator.py
+      run: .venv/bin/python src/validators/bond_validator.py
 
     - name: Render smoke email
-      run: ./scripts/render_email_smoke.sh
+      run: |
+        source .venv/bin/activate
+        ./scripts/render_email_smoke.sh
