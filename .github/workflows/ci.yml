@@ -1,25 +1,36 @@
 name: daily-report-ci
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  validate:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install deps
-        run: pip install -r requirements.txt
-      - name: Python version
-        run: python --version
-      - name: Stock CSV validation
-        run: |
-          if [ -f src/validators/stock_validator.py ]; then
-            python src/validators/stock_validator.py
-          else
-            echo "Validator not present; skipping."
-          fi
-      - name: Email smoke render
-        run: |
-          chmod +x scripts/render_email_smoke.sh || true
-          ./scripts/render_email_smoke.sh
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install --upgrade pip
+        pip install jinja2
+
+    - name: Stock CSV validation
+      run: python src/validators/stock_validator.py
+
+    - name: Bond CSV validation
+      run: python src/validators/bond_validator.py
+
+    - name: Render smoke email
+      run: ./scripts/render_email_smoke.sh
