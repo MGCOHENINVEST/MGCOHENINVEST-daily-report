@@ -1,57 +1,71 @@
-{% if bond_analytics %}
-  <h3 style="margin-top:18px;">Bond Analytics</h3>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Daily Report</title>
+  </head>
+  <body style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#333;line-height:1.4;margin:0;padding:0;">
+    <center style="width:100%;background-color:#f9f9f9;padding:20px 0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;background:#fff;border:1px solid #eaeaea;">
+        <tr>
+          <td style="padding:20px;text-align:center;background:#222;color:#fff;">
+            <h2 style="margin:0;font-size:20px;">Investment GPT — Daily Report</h2>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px;">
 
-  <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;">
-    <tr>
-      <td style="padding:8px 0;">
-        <div style="font-size:14px;line-height:1.4;">
-          <strong>Total bonds:</strong> {{ bond_analytics.count }}
-          {% if bond_analytics.avg_ytm is not none %} · <strong>Avg YTM:</strong> {{ '%.2f' % bond_analytics.avg_ytm }}%{% endif %}
-          {% if bond_analytics.avg_running_yield is not none %} · <strong>Avg running:</strong> {{ '%.2f' % bond_analytics.avg_running_yield }}%{% endif %}
-          {% if bond_analytics.avg_duration_mod is not none %} · <strong>Avg mod dur:</strong> {{ '%.2f' % bond_analytics.avg_duration_mod }}y{% endif %}
-        </div>
-      </td>
-    </tr>
-  </table>
+            {% if top_movers %}
+              <h3 style="margin-top:0;">Top Movers</h3>
+              <ul style="padding-left:20px;margin:8px 0;">
+              {% for m in top_movers %}
+                <li>{{ m.ticker }} — {{ m.move }}%</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
 
-  <!-- Ladder -->
-  {% set L = bond_analytics.ladder %}
-  {% if L %}
-  <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;margin-top:6px;border:1px solid #eee;">
-    <tr>
-      <td colspan="5" style="background:#fafafa;border-bottom:1px solid #eee;padding:8px 10px;font-weight:600;">Ladder (count by bucket)</td>
-    </tr>
-    <tr>
-      {% for bucket in ['0-1y','1-3y','3-5y','5-10y','10y+'] %}
-      <td style="padding:10px;text-align:center;border-right:1px solid #eee;">
-        <div style="font-size:12px;color:#666;">{{ bucket }}</div>
-        <div style="font-size:16px;font-weight:700;">{{ L.get(bucket,0) }}</div>
-      </td>
-      {% endfor %}
-    </tr>
-  </table>
-  {% endif %}
+            {% if bond_analytics %}
+              <h3 style="margin-top:18px;">Bond Analytics</h3>
+              <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;">
+                <tr>
+                  <td style="padding:8px 0;">
+                    <div style="font-size:14px;line-height:1.4;">
+                      <strong>Total bonds:</strong> {{ bond_analytics.count }}
+                      {% if bond_analytics.avg_ytm is not none %} · <strong>Avg YTM:</strong> {{ '%.2f' % bond_analytics.avg_ytm }}%{% endif %}
+                      {% if bond_analytics.avg_running_yield is not none %} · <strong>Avg running:</strong> {{ '%.2f' % bond_analytics.avg_running_yield }}%{% endif %}
+                      {% if bond_analytics.avg_duration_mod is not none %} · <strong>Avg mod dur:</strong> {{ '%.2f' % bond_analytics.avg_duration_mod }}y{% endif %}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            {% endif %}
 
-  <!-- Next maturities -->
-  {% if bond_analytics.next_maturities %}
-  <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;margin-top:10px;border:1px solid #eee;">
-    <tr>
-      <td colspan="4" style="background:#fafafa;border-bottom:1px solid #eee;padding:8px 10px;font-weight:600;">Next maturities</td>
-    </tr>
-    <tr>
-      <th align="left" style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">Ticker</th>
-      <th align="left" style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">Issuer</th>
-      <th align="left" style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">Maturity</th>
-      <th align="right" style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">YTM</th>
-    </tr>
-    {% for b in bond_analytics.next_maturities %}
-    <tr>
-      <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ b.ticker or b.isin }}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ b.issuer }}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ b.maturity }}</td>
-      <td align="right" style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{% if b.ytm is not none %}{{ '%.2f' % b.ytm }}%{% else %}&nbsp;{% endif %}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endif %}
-{% endif %}
+            {% if dividend_upcoming %}
+              <h3 style="margin-top:18px;">Dividend Radar</h3>
+              <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;border:1px solid #eee;">
+                <tr>
+                  <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="left">Ticker</th>
+                  <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="left">Ex-Date</th>
+                  <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="right">Yield</th>
+                </tr>
+                {% for d in dividend_upcoming %}
+                <tr>
+                  <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ d.ticker }}</td>
+                  <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ d.ex_date }}</td>
+                  <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;" align="right">{{ '%.2f' % d.yield }}%</td>
+                </tr>
+                {% endfor %}
+              </table>
+            {% endif %}
+
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:15px;text-align:center;font-size:12px;color:#999;background:#f4f4f4;">
+            Sent automatically by Investment GPT
+          </td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>
