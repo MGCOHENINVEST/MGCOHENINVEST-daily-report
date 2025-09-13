@@ -5,59 +5,127 @@
     <title>{{ subject or "Daily Report" }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  <body style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; max-width:640px; margin:0 auto; padding:1rem; line-height:1.4;">
-    <h1>{{ headline or "Daily Report" }}</h1>
-    <p><strong>Freeze:</strong> {{ freeze }} · <strong>Snapshot:</strong> {{ snapshot }}</p>
+  <body style="margin:0;padding:0;background:#f6f7f9;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111;">
 
-    {% if exec_summary %}
-      <h3>Summary</h3>
-      <ul>
-        {% for line in exec_summary %}
-          <li>{{ line }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+    <!-- outer container -->
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background:#f6f7f9;">
+      <tr>
+        <td align="center">
 
-    {% if movers %}
-      <h3>Movers</h3>
-      <table role="presentation" width="100%" cellpadding="4" cellspacing="0">
-        <thead>
-          <tr>
-            <th align="left">Ticker</th>
-            <th align="left">Name</th>
-            <th align="right">Δ%</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for m in movers %}
-            {% set delta = m.delta_pct|float %}
-            {% if delta > 2 %}
-              {% set style = "color:green;font-weight:bold" %}
-              {% set symbol = "▲" %}
-            {% elif delta > 0.5 %}
-              {% set style = "color:green" %}
-              {% set symbol = "▲" %}
-            {% elif delta < -2 %}
-              {% set style = "color:red;font-weight:bold" %}
-              {% set symbol = "▼" %}
-            {% elif delta < -0.5 %}
-              {% set style = "color:red" %}
-              {% set symbol = "▼" %}
-            {% else %}
-              {% set style = "color:gray" %}
-              {% set symbol = "–" %}
-            {% endif %}
+          <!-- inner container -->
+          <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;max-width:720px;background:#fff;border:1px solid #e9ecf2;border-radius:8px;overflow:hidden;">
+            <!-- Header with inline CID logo -->
             <tr>
-              <td>{{ m.ticker }}</td>
-              <td>{{ m.name }}</td>
-              <td align="right" style="{{ style }}">{{ symbol }} {{ "%.2f"|format(delta) }}%</td>
+              <td style="padding:0;text-align:center;background:#222;">
+                <img src="cid:logo" alt="Cohen Capital" width="160" style="display:block;margin:0 auto;max-width:180px;height:auto;padding:16px 0;">
+              </td>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
 
-    <hr>
-    <p style="font-size:0.8rem;color:#888;">Daily report · Freeze {{ freeze }} · Snapshot {{ snapshot }}</p>
+            <!-- Meta -->
+            <tr>
+              <td style="padding:18px 20px 6px 20px;border-bottom:1px solid #f0f2f7;">
+                <div style="font-size:14px;color:#666;">
+                  <strong>Freeze:</strong> {{ freeze }} &nbsp;·&nbsp; <strong>Snapshot:</strong> {{ snapshot }}
+                </div>
+                <h2 style="margin:8px 0 0 0;font-size:20px;">{{ headline or "Daily Report" }}</h2>
+              </td>
+            </tr>
+
+            <!-- Executive Summary -->
+            {% if exec_summary %}
+            <tr>
+              <td style="padding:14px 20px;">
+                <h3 style="margin:0 0 8px 0;">Summary</h3>
+                <ul style="margin:0;padding-left:18px;">
+                  {% for line in exec_summary %}
+                  <li style="margin:4px 0;line-height:1.4;">{{ line }}</li>
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+            {% endif %}
+
+            <!-- Movers -->
+            {% if movers %}
+            <tr>
+              <td style="padding:14px 20px;">
+                <h3 style="margin:0 0 8px 0;">Movers</h3>
+                <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;border:1px solid #eee;">
+                  <tr>
+                    <th align="left" style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">Ticker</th>
+                    <th align="left" style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">Name</th>
+                    <th align="right" style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">Δ %</th>
+                  </tr>
+                  {% for m in movers %}
+                  {% set is_up = (m.delta_pct | float) >= 0 %}
+                  <tr>
+                    <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ m.ticker }}</td>
+                    <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ m.name }}</td>
+                    <td align="right" style="padding:8px 10px;border-bottom:1px solid #f2f2f2;{{ 'color:#14804a;' if is_up else 'color:#c92a2a;' }}">{{ '%.2f' % m.delta_pct }}%</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </td>
+            </tr>
+            {% endif %}
+
+            <!-- Bond Analytics -->
+            {% if bond_analytics %}
+            <tr>
+              <td style="padding:14px 20px;">
+                <h3 style="margin:0 0 8px 0;">Bond Analytics</h3>
+                <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;">
+                  <tr>
+                    <td style="padding:8px 0;">
+                      <div style="font-size:14px;line-height:1.4;">
+                        <strong>Total bonds:</strong> {{ bond_analytics.count }}
+                        {% if bond_analytics.avg_ytm is not none %} · <strong>Avg YTM:</strong> {{ '%.2f' % bond_analytics.avg_ytm }}%{% endif %}
+                        {% if bond_analytics.avg_running_yield is not none %} · <strong>Avg running:</strong> {{ '%.2f' % bond_analytics.avg_running_yield }}%{% endif %}
+                        {% if bond_analytics.avg_duration_mod is not none %} · <strong>Avg mod dur:</strong> {{ '%.2f' % bond_analytics.avg_duration_mod }}y{% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            {% endif %}
+
+            <!-- Dividend Radar -->
+            {% if dividend_upcoming %}
+            <tr>
+              <td style="padding:14px 20px;">
+                <h3 style="margin:0 0 8px 0;">Dividend Radar</h3>
+                <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;border:1px solid #eee;">
+                  <tr>
+                    <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="left">Ticker</th>
+                    <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="left">Ex-Date</th>
+                    <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="right">Yield</th>
+                  </tr>
+                  {% for d in dividend_upcoming %}
+                  <tr>
+                    <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ d.ticker }}</td>
+                    <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ d.ex_date }}</td>
+                    <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;" align="right">{{ '%.2f' % d.yield }}%</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </td>
+            </tr>
+            {% endif %}
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding:16px 20px;color:#777;font-size:12px;border-top:1px solid #f0f2f7;">
+                Sent automatically by InvestmentGPT • {{ freeze }} • {{ snapshot }}
+              </td>
+            </tr>
+          </table>
+
+          <div style="height:24px;">&nbsp;</div>
+
+        </td>
+      </tr>
+    </table>
+
   </body>
 </html>
