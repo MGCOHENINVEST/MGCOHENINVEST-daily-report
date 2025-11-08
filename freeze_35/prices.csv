@@ -1,0 +1,9 @@
+ticker,name,last,prev_close,month_ago_close
+BARC.L,Barclays,182.4,180.8,171.0
+LLOY.L,Lloyds,51.8,52.0,49.2
+MSFT,Microsoft,422.10,416.30,398.20
+NVDA,NVIDIA,114.35,115.38,108.40
+AAPL,Apple,228.70,227.95,221.10
+AMZN,Amazon,178.22,177.15,168.05
+GOOGL,Alphabet,161.05,161.40,155.90
+META,Meta,509.40,505.38,486.10

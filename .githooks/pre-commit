@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if git diff --cached --name-only | grep -E '\.(zip|7z|tar|gz|bz2)$' >/dev/null; then
+  echo "❌ Large archives are banned from Git. Use S3 and FREEZE_INDEX.json." >&2
+  exit 1
+fi

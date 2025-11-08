@@ -1,0 +1,12 @@
+{
+  "articles": [
+    {
+      "title": "MSFT, NVDA lead mega-cap rally",
+      "url": "https://example.com/megacap"
+    },
+    {
+      "title": "Brent steady, WTI at $79",
+      "url": "https://example.com/oil"
+    }
+  ]
+}

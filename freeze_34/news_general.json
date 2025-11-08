@@ -1,0 +1,12 @@
+{
+  "articles": [
+    {
+      "title": "BoE holds Bank Rate at 5.25%",
+      "url": "https://example.com/boe"
+    },
+    {
+      "title": "Euro area retail sales slip",
+      "url": "https://example.com/ea-retail"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "v37": {
+    "snapshot": "5f4771412cb0657c3d9c45b6cee671443367f48e443554d8530e60a5840607ad",
+    "uri": "s3://your-bucket/daily-report/freezes/v37/freeze_37.zip",
+    "ts": "2025-09-12T21:57:00Z"
+  }
+}
