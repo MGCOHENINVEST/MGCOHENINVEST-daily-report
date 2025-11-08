@@ -1,13 +1,24 @@
-.venv/
-.env*
-*.bak
-*.save
+# Python cruft
 __pycache__/
 *.pyc
-out/
-awscliv2.zip
-.DS_Store
+*.pyo
 
-# heavy artifacts
-*.zip
-/freezes/
+# Virtual env
+venv/
+.venv/
+
+# Secrets
+.env
+
+# Outputs (regenerated)
+out/
+assets/
+logs/
+
+# Inputs that change often
+in/
+!in/eodhd_watchlist.csv
+
+# Editors/system
+*.swp
+.DS_Store
