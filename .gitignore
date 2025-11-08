@@ -1,0 +1,23 @@
+# Python cruft
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual env
+venv/
+
+# Secrets
+.env
+
+# Outputs (regenerated)
+out/
+assets/
+logs/
+
+# Inputs that change often
+in/
+!in/eodhd_watchlist.csv
+
+# Editor/system flotsam
+*.swp
+.DS_Store
