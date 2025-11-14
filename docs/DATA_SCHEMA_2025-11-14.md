@@ -719,21 +719,77 @@ _All numeric values are stored as raw floats; formatting (5 significant figures,
   ]
 }
 ```
-
-Notes:
+ 
+### 8.3 Notes:
 
 - `window_start/window_end` normally ±365 days around `as_of_date`.  
 - `withholding_tax_rate_default` is jurisdictional default, not investor-specific.
 
 ---
 
-## 9. Corporate Events (Results / Earnings)
+## 9. Equity input tables (canonical CSV inputs)
 
-### 9.1 File path
+These canonical CSVs hold the raw equity data used to build:
+
+- `equity_dividends_agg.csv`
+- `equity_overview.csv`
+- `equities_core.json`
+- `dividend_events.json`
+
+Unless stated otherwise, all joins use the identifier pair `(ticker, exchange)` consistent with `data/stock.csv`.
+
+### 9.1 Daily prices – `prices.csv`
+
+#### 9.1.1 File path
+
+- `prices.csv`
+
+#### 9.1.2 Structure
+
+```csv
+date,ticker,exchange,close,volume,currency,source
+2025-11-14,BARC,LSE,1.720,12500000,GBP,EODHD
+```
+### 9.1.3 Notes
+
+- `date is the market date for the close (normally T-1 for the morning email)`
+- `ticker and exchange are the canonical identifiers used across all equity tables`
+- `close is the official end-of-day close in currency`
+- `volume is optional; if missing from the vendor it may be set to 0 or null`
+- `source is typically EODHD but can be a manual override label if needed`
+
+### 9.2 Dividend events – dividends.csv
+
+This is the canonical, cleaned dividend input used to derive equity_dividends_agg.csv and dividend_events.json.
+
+### 9.2.1 File path
+
+- `dividends.csv`
+
+### 9.2.2 Structure
+
+```csv
+ticker,exchange,ex_date,pay_date,amount,currency,source
+BARC,LSE,2025-09-05,2025-10-04,0.023,GBP,EODHD
+```
+
+### 9.2.3 Notes
+
+- `ticker and exchange match data/stock.csv and prices.csv`
+- `ex_date is the ex-dividend date`
+- `pay_date is the cash payment date (can be null if not yet confirmed)`
+- `amount is the cash amount per share in currency as a decimal, not a string like "2.3p"`
+- `source is typically EODHD or a manual source label`
+
+---
+
+## 10. Corporate Events (Results / Earnings)
+
+### 10.1 File path
 
 - `corporate_events.json`
 
-### 9.2 Structure
+### 10.2 Structure
 
 ```json
 {
@@ -742,6 +798,7 @@ Notes:
   "as_of_time_utc": "2025-11-14T07:35:00Z",
   "data_vintage": "T-1_close",
   "generated_at_utc": "2025-11-14T07:37:12Z",
+
 
   "window_start": "2024-11-14",
   "window_end": "2026-11-14",
@@ -791,13 +848,13 @@ Notes:
 
 ---
 
-## 10. AT1 Bonds
+## 11. AT1 Bonds
 
-### 10.1 File path
+### 11.1 File path
 
 - `at1_bonds.json`
 
-### 10.2 Structure
+### 11.2 Structure
 
 ```json
 {
@@ -875,13 +932,13 @@ Notes:
 
 ---
 
-## 11. Daily Brief – “4 Things That Matter”
+## 12. Daily Brief – “4 Things That Matter”
 
-### 11.1 File path
+### 12.1 File path
 
 - `daily_brief_top4.json`
 
-### 11.2 Structure
+### 12.2 Structure
 
 ```json
 {
@@ -943,7 +1000,7 @@ Notes:
 }
 ```
 
-### 11.3 Field definitions
+### 12.3 Field definitions
 
 - `brief_type` (string enum)
   - `"TOP_4"` – normal daily brief with up to 4 items.
@@ -1005,7 +1062,7 @@ Notes:
 - `kind` – record type within that file (`"macro_event"`, `"yield_row"`, `"fx_pair"`, `"equity"`, `"dividend_event"`, `"corporate_event"`, `"at1_bond"`, `"index"`, `"commodity"`, `"other"`).  
 - `id` – event/row identifier (`event_id`, maturity code, pair code, etc).
 
-### 11.4 Guardrails
+### 12.4 Guardrails
 
 - `score` and `subscores` are **deterministic** (rule-based), not LLM-generated.  
 - LLM is allowed to generate `title`, `fact`, `why_it_matters`, and `action.summary`, but not numeric scoring.  
