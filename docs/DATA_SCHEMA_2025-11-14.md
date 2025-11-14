@@ -575,6 +575,84 @@ Notes:
   ]
 }
 ```
+### 7.3 Derived CSV tables
+
+The `equities_core.json` object is the canonical source. Two flat CSV tables are generated from it for use by the email renderer and GPT layer.
+
+#### 7.3.1 Equity overview table
+
+- File path: `out/data/equity_overview.csv`
+- Grain: one row per equity in the core universe.
+
+**Columns**
+
+- `ticker` (string) – primary key, matches `security_id.ticker`.
+- `isin` (string) – from `security_id.isin`.
+- `name` (string) – issuer name.
+- `exchange` (string) – trading venue, e.g. `XLON`, `XNAS`.
+- `country` (string) – 2-letter ISO country code.
+- `sector` (string) – sector / industry bucket.
+- `currency` (string) – ISO-4217 trading currency.
+
+- `price_today` (float) – latest adjusted close (`T_1_close`).
+- `price_d1` (float) – previous trading day close.
+- `price_w1` (float) – close one week ago.
+- `price_m1` (float) – close one month ago.
+- `price_m3` (float) – close three months ago.
+- `price_m6` (float) – close six months ago.
+- `price_y1` (float) – close one year ago.
+
+- `ret_d1` (float) – 1-day total return vs `price_d1` (decimal, 0.05 = 5%).
+- `ret_w1` (float) – 1-week total return.
+- `ret_m1` (float) – 1-month total return.
+- `ret_m3` (float) – 3-month total return.
+- `ret_m6` (float) – 6-month total return.
+- `ret_y1` (float) – 1-year total return.
+
+- `hi_52w` (float) – 52-week high.
+- `lo_52w` (float) – 52-week low.
+- `drawdown_from_hi_pct` (float) – `(price_today / hi_52w) - 1` (decimal).
+
+- `volume_today` (integer) – latest day’s volume.
+- `avg_volume_20d` (integer) – 20-day average volume.
+- `market_cap` (float) – market capitalisation in local currency.
+
+- `realised_vol_20d` (float) – 20-day annualised realised vol (decimal).
+- `realised_vol_60d` (float) – 60-day annualised realised vol (decimal).
+
+- `pe_ttm` (float) – trailing P/E.
+- `pe_forward` (float) – forward P/E.
+- `pe_forward_period` (string) – e.g. `NTM`.
+- `pbr` (float) – price / book.
+
+- `div_yield_ttm` (float) – trailing cash dividend yield (decimal).
+- `div_yield_forward` (float) – forward dividend yield (decimal).
+
+- `beta_vs_index` (float) – beta vs reference index.
+- `beta_reference_index` (string) – e.g. `FTSE_100`, `SPX`.
+- `beta_lookback_days` (integer) – lookback window in trading days.
+
+- `next_results_date` (date, `YYYY-MM-DD`) – next scheduled results date, if known.
+- `next_results_type` (string) – `FY`, `HY`, `Q1`, etc.
+- `next_results_status` (string) – `Confirmed` | `Estimated` | `None`.
+
+_All numeric values are stored as raw floats; formatting (5 significant figures, % vs decimal, thousand separators) happens only at render time._
+
+#### 7.3.2 Equity dividend aggregates
+
+- File path: `out/data/equity_dividends_agg.csv`
+- Grain: one row per equity with dividend history / forward dividends.
+- Sources: `equities_core.json` + `dividend_events.json`.
+
+**Columns**
+
+- `ticker` (string) – primary key, matches `equity_overview.ticker`.
+
+- `div_trailing_12m` (float) – total cash dividends over trailing 12 months, per share, in local currency.
+- `div_trailing_12m_period_start` (date) – start of trailing window.
+- `div_trailing_12m_period_end` (date) – end of trailing window.
+
+- `div_forward_12m` (float) – expected cash dividends o
 
 ---
 
