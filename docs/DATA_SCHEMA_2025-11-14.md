@@ -781,6 +781,40 @@ BARC,LSE,2025-09-05,2025-10-04,0.023,GBP,EODHD
 - `amount is the cash amount per share in currency as a decimal, not a string like "2.3p"`
 - `source is typically EODHD or a manual source label`
 
+### 9.3 Equity overview – equity_overview.csv
+
+This is the derived, single-row-per-ticker view used for the email tables and any “quick scan” equity views.
+
+### 9.3.1 File path
+
+- `out/data/equity_overview.csv`
+
+### 9.3.2 Structure
+
+```csv
+ticker,exchange,isin,name,country,sector,currency,price_today,price_d1,price_w1,price_m1,price_m3,price_m6,price_y1,ret_d1,ret_w1,ret_m1,ret_m3,ret_m6,ret_y1,hi_52w,lo_52w,drawdown_from_hi_pct,div_trailing_12m,div_yield_trailing_12m,next_div_ex_date,next_div_pay_date,next_div_amount,next_div_currency,notes_flag,watchlist_flag
+```
+
+### 9.3.3 Notes
+
+- `One row per (ticker, exchange) that is in scope for the report (e.g. your equity universe + watchlists)`
+- `price_today is the most recent close in currency (normally T-1)`
+- `price_d1, price_w1, price_m1, price_m3, price_m6, price_y1 are closes at those lookbacks relative to as_of_date:d1 ≈ 1 trading day ago`
+- `w1 ≈ 5 trading days ago`
+- `m1 ≈ 21 trading days ago`
+- `m3 ≈ 63 trading days ago`
+- `m6 ≈ 126 trading days ago`
+- `y1 ≈ 252 trading days ago (trailing 12-month, not calendar YTD)`
+- `ret_* fields are total returns over those windows, computed from the price fields (and optionally incorporating dividends later if we choose)`
+- `hi_52w / lo_52w are the rolling 52-week high and low in currency`
+- `drawdown_from_hi_pct is (price_today / hi_52w) - 1 expressed as a decimal (e.g. -0.18 for -18%)`
+- `div_trailing_12m is the sum of cash dividends over the trailing 12 months in currency`
+- `div_yield_trailing_12m is div_trailing_12m / price_today as a decimal (e.g. 0.045 for 4.5%).`
+- `next_div_* fields represent the next known dividend event, if any, for that ticker:`
+- `If no upcoming dividend is known, these fields may be null.`
+- `notes_flag is a short text marker used to drive email annotations (e.g. "NEW_HIGH", "EX_DIV_TODAY", "WATCH")`
+- `watchlist_flag is a boolean / 0|1 used to tag names that are on one or more watchlists or in special focus groups.`
+
 ---
 
 ## 10. Corporate Events (Results / Earnings)
