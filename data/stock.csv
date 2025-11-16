@@ -1,6 +1,7 @@
-ticker,isin,name,exchange,country,sector,currency
-ULVR,GB00B10RZP78,Unilever,XLON,GB,Consumer Staples,GBP
-AAPL,US0378331005,Apple Inc.,XNAS,US,Technology,USD
-MSFT,US5949181045,Microsoft,XNAS,US,Technology,USD
-VOD,GB00BH4HKS39,Vodafone Group,XLON,GB,Communication Services,GBP
-RIO,GB0007188757,Rio Tinto,XLON,GB,Materials,GBP
+ticker,exchange,isin,name,country,sector,currency
+ULVR,XLON,GB00B10RZP78,Unilever,GB,Consumer Staples,GBP
+AAPL,XNAS,US0378331005,Apple Inc.,US,Technology,USD
+MSFT,XNAS,US5949181045,Microsoft,US,Technology,USD
+VOD,XLON,GB00BH4HKS39,Vodafone Group,GB,Communication Services,GBP
+RIO,XLON,GB0007188757,Rio Tinto,GB,Materials,GBP
+TEST,LSE,GB00TESTISIN,Test Corp,UK,Test Sector,GBP
