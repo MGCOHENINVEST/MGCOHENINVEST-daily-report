@@ -1,0 +1,6 @@
+date,ticker,exchange,close,volume,currency,source
+2025-11-10,TEST,LSE,98,1000,GBP,manual
+2025-11-11,TEST,LSE,99,1100,GBP,manual
+2025-11-12,TEST,LSE,100,1200,GBP,manual
+2025-11-13,TEST,LSE,101,1300,GBP,manual
+2025-11-14,TEST,LSE,102,1400,GBP,manual

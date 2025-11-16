@@ -1,0 +1,3 @@
+ticker,exchange,ex_date,pay_date,amount,currency,source
+TEST,LSE,2025-06-15,2025-07-01,2.00,GBP,manual
+TEST,LSE,2025-10-15,2025-11-01,2.00,GBP,manual
