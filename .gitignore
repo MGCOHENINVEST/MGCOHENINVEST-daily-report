@@ -1,24 +1,45 @@
-# Python cruft
+# ---- Secrets / env ----
+.env
+.env.*
+!.env.example
+.env_bak*
+.env.bak*
+.env_data
+.env_email
+.env_ids
+.mail.env
+config.env
+
+# ---- Local/runtime dirs (not source) ----
+venv/
+out/
+logs/
+tmp/
+archive/
+backups/
+backup_*/
+releases/
+_snap/
+_snapshots/
+config/
+assets/
+in/
+
+# ---- Logs ----
+*.log
+*.log.*
+*.gz
+
+# ---- Data backups / scratch ----
+data/*.bak*
+data/*TEST_ONLY*
+data/stock.csv.*
+
+# ---- Archives ----
+*.tgz
+*.tar.gz
+*.zip
+
+# ---- Python cruft ----
 __pycache__/
 *.pyc
-*.pyo
-
-# Virtual env
-venv/
-.venv/
-
-# Secrets
-.env
-
-# Outputs (regenerated)
-out/
-assets/
-logs/
-
-# Inputs that change often
-in/
-!in/eodhd_watchlist.csv
-
-# Editors/system
-*.swp
-.DS_Store
