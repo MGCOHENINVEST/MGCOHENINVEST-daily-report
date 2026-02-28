@@ -1,63 +1,71 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>{{ subject or "Daily Report" }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Daily Report</title>
   </head>
-  <body style="font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; max-width:640px; margin:0 auto; padding:1rem; line-height:1.4;">
-    <h1>{{ headline or "Daily Report" }}</h1>
-    <p><strong>Freeze:</strong> {{ freeze }} · <strong>Snapshot:</strong> {{ snapshot }}</p>
+  <body style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#333;line-height:1.4;margin:0;padding:0;">
+    <center style="width:100%;background-color:#f9f9f9;padding:20px 0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;background:#fff;border:1px solid #eaeaea;">
+        <tr>
+          <td style="padding:20px;text-align:center;background:#222;color:#fff;">
+            <h2 style="margin:0;font-size:20px;">Investment GPT — Daily Report</h2>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px;">
 
-    {% if exec_summary %}
-      <h3>Summary</h3>
-      <ul>
-        {% for line in exec_summary %}
-          <li>{{ line }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-
-    {% if movers %}
-      <h3>Movers</h3>
-      <table role="presentation" width="100%" cellpadding="4" cellspacing="0">
-        <thead>
-          <tr>
-            <th align="left">Ticker</th>
-            <th align="left">Name</th>
-            <th align="right">Δ%</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for m in movers %}
-            {% set delta = m.delta_pct|float %}
-            {% if delta > 2 %}
-              {% set style = "color:green;font-weight:bold" %}
-              {% set symbol = "▲" %}
-            {% elif delta > 0.5 %}
-              {% set style = "color:green" %}
-              {% set symbol = "▲" %}
-            {% elif delta < -2 %}
-              {% set style = "color:red;font-weight:bold" %}
-              {% set symbol = "▼" %}
-            {% elif delta < -0.5 %}
-              {% set style = "color:red" %}
-              {% set symbol = "▼" %}
-            {% else %}
-              {% set style = "color:gray" %}
-              {% set symbol = "–" %}
+            {% if top_movers %}
+              <h3 style="margin-top:0;">Top Movers</h3>
+              <ul style="padding-left:20px;margin:8px 0;">
+              {% for m in top_movers %}
+                <li>{{ m.ticker }} — {{ m.move }}%</li>
+              {% endfor %}
+              </ul>
             {% endif %}
-            <tr>
-              <td>{{ m.ticker }}</td>
-              <td>{{ m.name }}</td>
-              <td align="right" style="{{ style }}">{{ symbol }} {{ "%.2f"|format(delta) }}%</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
 
-    <hr>
-    <p style="font-size:0.8rem;color:#888;">Daily report · Freeze {{ freeze }} · Snapshot {{ snapshot }}</p>
+            {% if bond_analytics %}
+              <h3 style="margin-top:18px;">Bond Analytics</h3>
+              <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;">
+                <tr>
+                  <td style="padding:8px 0;">
+                    <div style="font-size:14px;line-height:1.4;">
+                      <strong>Total bonds:</strong> {{ bond_analytics.count }}
+                      {% if bond_analytics.avg_ytm is not none %} · <strong>Avg YTM:</strong> {{ '%.2f' % bond_analytics.avg_ytm }}%{% endif %}
+                      {% if bond_analytics.avg_running_yield is not none %} · <strong>Avg running:</strong> {{ '%.2f' % bond_analytics.avg_running_yield }}%{% endif %}
+                      {% if bond_analytics.avg_duration_mod is not none %} · <strong>Avg mod dur:</strong> {{ '%.2f' % bond_analytics.avg_duration_mod }}y{% endif %}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            {% endif %}
+
+            {% if dividend_upcoming %}
+              <h3 style="margin-top:18px;">Dividend Radar</h3>
+              <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;border:1px solid #eee;">
+                <tr>
+                  <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="left">Ticker</th>
+                  <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="left">Ex-Date</th>
+                  <th style="padding:8px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;" align="right">Yield</th>
+                </tr>
+                {% for d in dividend_upcoming %}
+                <tr>
+                  <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ d.ticker }}</td>
+                  <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;">{{ d.ex_date }}</td>
+                  <td style="padding:8px 10px;border-bottom:1px solid #f2f2f2;" align="right">{{ '%.2f' % d.yield }}%</td>
+                </tr>
+                {% endfor %}
+              </table>
+            {% endif %}
+
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:15px;text-align:center;font-size:12px;color:#999;background:#f4f4f4;">
+            Sent automatically by Investment GPT
+          </td>
+        </tr>
+      </table>
+    </center>
   </body>
 </html>
