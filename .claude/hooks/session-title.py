@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """SessionStart hook: name Cowork / Claude Code sessions per the chat naming protocol.
 
-Emits a title of the form:  YYYY-MM-DD · AREA · Topic
+Emits a title of the form:  YYYY-MM-DD · AREA · Topic [· ↻YYYY-MM-DD]
+
+The leading date is when the session was first created; the trailing "↻" date is
+the most recent interaction. The two are equal on the first day (the ↻ suffix is
+omitted then) and diverge once the session is resumed on a later day.
+
 See docs/CHAT_NAMING_PROTOCOL.md.
 
-Reads the SessionStart hook payload from stdin and prints the sessionTitle
-JSON to stdout. Never fails the session: any error results in no title change.
+Reads the SessionStart hook payload from stdin and prints the sessionTitle JSON
+to stdout. Never fails the session: any error results in no title change.
 """
 import datetime
 import json
@@ -15,6 +20,7 @@ import subprocess
 import sys
 
 SEP = " · "  # space + middle dot + space
+LAST_ACTIVE_MARK = "↻"  # precedes the most-recent-interaction date
 DEFAULT_AREA = "SYS"
 
 
@@ -57,6 +63,36 @@ def topic(root):
     return branch.replace("-", " ").replace("_", " ").strip()
 
 
+def created_date(root, payload, today):
+    """Return the session's original creation date, persisting it per session_id.
+
+    On the first run for a session we record today's date; on resume we read it
+    back so the leading date stays fixed while the ↻ date advances.
+    """
+    sid = payload.get("session_id")
+    if not sid:
+        return today
+    safe = re.sub(r"[^A-Za-z0-9_-]", "", str(sid))
+    state_dir = os.path.join(root, ".claude", "state")
+    state_file = os.path.join(state_dir, f"{safe}.created")
+    if payload.get("source") == "resume":
+        try:
+            with open(state_file, encoding="utf-8") as fh:
+                val = fh.read().strip()
+                if val:
+                    return val
+        except OSError:
+            pass
+    # startup (or resume with no state): record and use today.
+    try:
+        os.makedirs(state_dir, exist_ok=True)
+        with open(state_file, "w", encoding="utf-8") as fh:
+            fh.write(today)
+    except OSError:
+        pass
+    return today
+
+
 def main():
     try:
         payload = json.load(sys.stdin)
@@ -68,11 +104,15 @@ def main():
         return
 
     root = project_dir(payload)
-    date = datetime.date.today().isoformat()
+    today = datetime.date.today().isoformat()
     area = area_code(root)
     top = topic(root)
+    created = created_date(root, payload, today)
 
-    title = f"{date}{SEP}{area}{SEP}{top}" if top else f"{date}{SEP}{area}"
+    title = f"{created}{SEP}{area}{SEP}{top}" if top else f"{created}{SEP}{area}"
+    if today != created:
+        title += f"{SEP}{LAST_ACTIVE_MARK}{today}"
+
     json.dump(
         {
             "hookSpecificOutput": {
