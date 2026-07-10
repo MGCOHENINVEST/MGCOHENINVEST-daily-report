@@ -98,7 +98,8 @@ in the title code.
 `.claude/hooks/session-title.py` runs when a session starts/resumes in this repo:
 
 - **Created date** — recorded per session on first start (persisted under
-  `.claude/state/`, git-ignored) so it stays fixed across resumes.
+  `~/.claude/session-titles/`, user-level, so it stays fixed across resumes and
+  the same hook works globally without writing into each repo).
 - **AREA** — from `.claude/chat-area` (currently `SYS`), or the `CLAUDE_CHAT_AREA`
   environment variable.
 - **Sub** — from `.claude/chat-sub` or the `CLAUDE_CHAT_SUB` env var. Optional;
@@ -110,6 +111,24 @@ in the title code.
 Override any session title with `/rename`, or at launch with
 `claude -n "2026-07-10 · INV · Deal · Some topic"`. Change the repo defaults by
 editing `.claude/chat-area` and `.claude/chat-sub`.
+
+### Use it in every repo (global install)
+
+The hook above lives in this repo's `.claude/`. To name sessions in **all** your
+repos, install it once at the user level:
+
+```bash
+bin/install-session-naming.py           # copies the hook to ~/.claude/hooks/
+                                        # and adds the SessionStart hook to
+                                        # ~/.claude/settings.json (backs up first)
+bin/install-session-naming.py --print   # preview only, change nothing
+bin/install-session-naming.py --uninstall
+```
+
+It's idempotent (won't duplicate the hook) and merges into existing settings
+without disturbing other hooks. After installing, every repo names its sessions;
+each repo can still set its own area via `.claude/chat-area` (or `CLAUDE_CHAT_AREA`),
+defaulting to `SYS` where nothing is set.
 
 ## Archiving to the Obsidian vault
 

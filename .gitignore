@@ -43,6 +43,3 @@ data/stock.csv.*
 # ---- Python cruft ----
 __pycache__/
 *.pyc
-
-# ---- Claude session state (per-session created dates; not source) ----
-.claude/state/

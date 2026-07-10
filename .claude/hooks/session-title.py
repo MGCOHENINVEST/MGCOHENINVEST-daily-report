@@ -69,6 +69,15 @@ def topic(root):
     return branch.replace("-", " ").replace("_", " ").strip()
 
 
+def state_dir():
+    """User-level state dir so one globally-installed hook works across all repos
+    without writing into (or requiring a .gitignore in) each project."""
+    override = os.environ.get("CLAUDE_SESSION_TITLE_STATE", "").strip()
+    if override:
+        return override
+    return os.path.join(os.path.expanduser("~"), ".claude", "session-titles")
+
+
 def created_date(root, payload, today):
     """Return the session's original creation date, persisting it per session_id.
 
@@ -79,8 +88,8 @@ def created_date(root, payload, today):
     if not sid:
         return today
     safe = re.sub(r"[^A-Za-z0-9_-]", "", str(sid))
-    state_dir = os.path.join(root, ".claude", "state")
-    state_file = os.path.join(state_dir, f"{safe}.created")
+    sdir = state_dir()
+    state_file = os.path.join(sdir, f"{safe}.created")
     if payload.get("source") == "resume":
         try:
             with open(state_file, encoding="utf-8") as fh:
@@ -91,7 +100,7 @@ def created_date(root, payload, today):
             pass
     # startup (or resume with no state): record and use today.
     try:
-        os.makedirs(state_dir, exist_ok=True)
+        os.makedirs(sdir, exist_ok=True)
         with open(state_file, "w", encoding="utf-8") as fh:
             fh.write(today)
     except OSError:
