@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """SessionStart hook: name Cowork / Claude Code sessions per the chat naming protocol.
 
-Emits a title of the form:  YYYY-MM-DD · AREA · Topic [· ↻YYYY-MM-DD]
+Emits a title of the form:  YYYY-MM-DD · AREA [· Sub] · Topic [· ↻YYYY-MM-DD]
 
 The leading date is when the session was first created; the trailing "↻" date is
 the most recent interaction. The two are equal on the first day (the ↻ suffix is
-omitted then) and diverge once the session is resumed on a later day.
-
-See docs/CHAT_NAMING_PROTOCOL.md.
+omitted then) and diverge once the session is resumed on a later day. The optional
+"Sub" token is a sub-area (see docs/CHAT_NAMING_PROTOCOL.md) and is included only
+when configured.
 
 Reads the SessionStart hook payload from stdin and prints the sessionTitle JSON
 to stdout. Never fails the session: any error results in no title change.
@@ -28,18 +28,24 @@ def project_dir(payload):
     return os.environ.get("CLAUDE_PROJECT_DIR") or payload.get("cwd") or os.getcwd()
 
 
-def area_code(root):
-    env = os.environ.get("CLAUDE_CHAT_AREA", "").strip()
-    if env:
-        return env.upper()
+def _read_config(root, env_name, file_name):
+    val = os.environ.get(env_name, "").strip()
+    if val:
+        return val
     try:
-        with open(os.path.join(root, ".claude", "chat-area"), encoding="utf-8") as fh:
-            val = fh.read().strip()
-            if val:
-                return val.upper()
+        with open(os.path.join(root, ".claude", file_name), encoding="utf-8") as fh:
+            return fh.read().strip()
     except OSError:
-        pass
-    return DEFAULT_AREA
+        return ""
+
+
+def area_code(root):
+    return (_read_config(root, "CLAUDE_CHAT_AREA", "chat-area") or DEFAULT_AREA).upper()
+
+
+def sub_code(root):
+    # Sub-areas are title-case tokens (e.g. "Deal", "Bugfix"); keep case as given.
+    return _read_config(root, "CLAUDE_CHAT_SUB", "chat-sub")
 
 
 def topic(root):
@@ -106,10 +112,16 @@ def main():
     root = project_dir(payload)
     today = datetime.date.today().isoformat()
     area = area_code(root)
+    sub = sub_code(root)
     top = topic(root)
     created = created_date(root, payload, today)
 
-    title = f"{created}{SEP}{area}{SEP}{top}" if top else f"{created}{SEP}{area}"
+    parts = [created, area]
+    if sub:
+        parts.append(sub)
+    if top:
+        parts.append(top)
+    title = SEP.join(parts)
     if today != created:
         title += f"{SEP}{LAST_ACTIVE_MARK}{today}"
 
