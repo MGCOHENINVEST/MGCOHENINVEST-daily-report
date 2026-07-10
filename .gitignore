@@ -43,3 +43,7 @@ data/stock.csv.*
 # ---- Python cruft ----
 __pycache__/
 *.pyc
+
+# ---- Claude local session state (written by the session-title hook; not source) ----
+.claude/state/
+.claude/session-titles/
