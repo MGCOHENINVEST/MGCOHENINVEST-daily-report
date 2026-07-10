@@ -113,9 +113,14 @@ editing `.claude/chat-area` and `.claude/chat-sub`.
 
 ## Archiving to the Obsidian vault
 
-Chats worth keeping are saved as **summary notes** in the vault. The vault is
-git-backed, so the reliable write path (from any surface, local or remote) is a
-commit to the vault's git repo.
+Chats worth keeping are saved as **summary notes** in the vault.
+
+> **Security constraint — no remote.** The vault is a **local-only git repo with
+> no remote**, by design: it holds sensitive notes and must never sit as plaintext
+> on a hosted remote (GitHub etc.). Off-site persistence is handled by the vault's
+> launchd auto-commit plus a daily **encrypted** bundle to OneDrive. Saving a note
+> therefore means **writing a file into the local vault folder** — never a
+> `git push`, clone, or `add_repo` to a hosted remote. Do not introduce one.
 
 ### Note format
 
@@ -123,7 +128,7 @@ One Markdown file per chat, named after the protocol (the `↻` date is *not* in
 filename, so the same note updates in place as `last_active` advances):
 
 ```
-Chats/2026-07-01 · INV · Deal · Convolo Group · v2.md
+_chats/2026-07-01 · INV · Deal · Convolo Group · v2.md
 ```
 
 ```yaml
@@ -145,25 +150,31 @@ Body sections: **Summary**, **Key points**, **Decisions**, **Follow-ups**, **Lin
 `created` / `last_active` / `entity` / `subarea` are all queryable in Obsidian
 (e.g. Dataview) for sorting, cross-area entity views, and "what did I touch this week".
 
-### Generating a note
+### Saving a note (local write, no remote)
 
-`bin/vault-note.py` formats a note from the metadata plus a summary you pipe in:
+`bin/save-to-vault.sh` writes the note straight into the local vault `_chats/`
+folder. It does **no git and no network** — the vault's own auto-commit and the
+daily encrypted off-site bundle carry it away.
 
 ```bash
-echo "$SUMMARY" | bin/vault-note.py \
+echo "$SUMMARY" | bin/save-to-vault.sh \
     --area INV --sub Deal --topic "Convolo Group" --entity "Convolo Group" \
-    --created 2026-07-01 --last-active 2026-07-10 \
-    --version 2 --source cowork \
-    --out /path/to/Vault/Chats
+    --created 2026-07-01 --last-active 2026-07-10 --version 2 --source cowork
 ```
 
-Omit `--out` to print to stdout; omit `--sub`/`--entity` to leave them out; omit
-the summary to get a fillable skeleton.
+Destination defaults to:
 
-### Getting the note into the vault
+```
+~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MC_Obsidian/_chats
+```
 
-Because the vault lives in its own git repo (not this one), saving is a
-clone → write → commit → push into **that** repo. To wire this up, the vault repo
-must be added to the session and the target folder confirmed (default `Chats/`).
-For Claude.ai chats, ask Claude to "save this to the vault" and it will generate
-the note and commit it to the vault repo.
+Override it with the `VAULT_CHATS_DIR` environment variable. Omit `--sub`/`--entity`
+to leave them out; omit the summary to write a fillable skeleton.
+
+Under the hood it calls **`bin/vault-note.py`** (which formats the note and can also
+print to stdout when run directly with `--out` omitted).
+
+> This runs on the machine that holds the vault (your Mac). A remote Cowork session
+> can't reach the local iCloud path, so for chats worth archiving, run the save
+> where the vault lives — or generate the note text with `vault-note.py` and drop it
+> into `_chats/` by hand.
