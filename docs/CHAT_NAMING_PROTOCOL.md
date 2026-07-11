@@ -40,6 +40,8 @@ collapses to `YYYY-MM-DD · AREA · Topic`.
 5. **Topic ≤ ~6 words**, leading with the proper noun (company, project, deliverable).
 6. **No trailing punctuation** on the topic.
 7. **Versions, not dates, track iterations.** `· v2` = second pass at the same thing.
+8. **No leading prefixes or status tags** (e.g. `WIP`). The date must lead so titles
+   sort chronologically. Track work-in-progress by **pinning** the chat, not in its name.
 
 ### Common drift to avoid
 
@@ -49,6 +51,10 @@ collapses to `YYYY-MM-DD · AREA · Topic`.
 | `2026-07-03 - INV - Kinly investment`   | Hyphens instead of middle dots   | `2026-07-03 · INV · Kinly investment` |
 | `2026-06- 29 · INV · Convolo`           | Stray space in the date          | `2026-06-29 · INV · Convolo`          |
 | `2026-07-08 · KW · W27 Post-Send QA.`   | Trailing period on topic         | `2026-07-08 · KW · W27 post-send QA`  |
+| `2026-07-08___OPS___Mac-File-Organisation` | Underscores instead of ` · `  | `2026-07-08 · OPS · Mac file organisation` |
+| `2026-07-03 PERS Bookoo Shot-Capture PRD` | No separators at all          | `2026-07-03 · PERS · Bookoo Shot-Capture PRD` |
+| `WIP 2026-07-07 · KW · Selection-contract` | Leading status prefix         | `2026-07-07 · KW · Selection-contract` |
+| `2026-07-10 · Systems/Ops · …`          | Ad-hoc code variant              | `2026-07-10 · OPS · …`                |
 
 ## Area codes
 
@@ -63,9 +69,14 @@ note's `entity` / `tags` fields, not in more top-level codes.
 | `FOO`  | Family office operations              | `Falcon Green comp/dividend`     |
 | `KW`   | WNAP — Python development             | `W27 post-send QA`               |
 | `SYS`  | Systems / infrastructure / meta-work  | `Anthropic advisor/orchestrator` |
+| `OPS`  | Operations — file/machine/admin ops   | `Mac file organisation`          |
+| `OBS`  | _(confirm label)_ — work capture / sweeps | `Uncaptured-work sweep — Convolo` |
 | `PERS` | Personal                              | `Coffee Logger`                  |
 
 Keep codes **short (2–4 letters), uppercase, stable**. Adding a code is deliberate.
+
+Do **not** use ad-hoc variants — normalise to the code: `Systems/Ops` and `OPS`
+both → `OPS`; spell an area out only in the `Topic`, never in the code slot.
 
 ## Sub-areas
 
@@ -79,6 +90,8 @@ rather than inventing tokens per chat.
 | `FOO`  | Comp · Dividend · Gift · Admin · Banking          |
 | `KW`   | Feature · Bugfix · Refactor · Infra · Release     |
 | `SYS`  | Vault · Notebook · Docs · Agent · Config          |
+| `OPS`  | Files · Backup · Migration · Machine · Admin      |
+| `OBS`  | _(define once OBS label is confirmed)_            |
 | `PERS` | Health · Log · Travel · Misc                      |
 
 For cross-area retrieval, the **entity** (company / project / person) is captured
